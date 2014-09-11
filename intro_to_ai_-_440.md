@@ -102,3 +102,9 @@ Difference b/w Tree and Graph Search:
 - Priorities stored 
 
 All these searches are called **uninformed searches**
+
+---
+
+## 9/9/14
+
+### Optimizing Search Algorithms
