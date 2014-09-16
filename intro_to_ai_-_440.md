@@ -8,7 +8,9 @@
 ## Table of Contents
 
 1. [Problem-Solving Agents](#anchor1)
-	2. 
+	2. [Search Problems](#anchor1.1)
+	2. [Optimizing Search Problems](#anchor1.2)
+	3. [Adversarial Search](#anchor1.3)
 
 
 ---
@@ -108,7 +110,7 @@ All these searches are called **uninformed searches**
 
 ## 9/9/14
 
-## Optimizing Search Algorithms
+## [Optimizing Search Algorithms](id:anchor1.2)
 
 ---
 
@@ -144,7 +146,7 @@ h(n) &\leq c(n, a, n) + h(n') \\\
 - Solve a subproblem
 	- improves solution times by a factor of 1000
 	
-## [Adversarial Search](id:anchor1.11)
+## [Adversarial Search](id:anchor1.3)
 
 - Games such as checkers, othello, chess, etc.
 - They are hard search problems
@@ -175,3 +177,28 @@ h(n) &\leq c(n, a, n) + h(n') \\\
 	- Performance depends on the order of terminal nodes instead
 		- Best-case $$$O(b^{m / 2})$$$
 		- Avg case: $$$O(b^{3m / 4})$$$
+		
+---
+
+## 9/16/14
+
+## More Optimization
+
+- $$$\alpha-\beta$$$ pruning depends on the order of terminal nodes
+	- best-case: $$$O(b^{m/2})$$$
+	- avg-case: $$$O(b^{3m/4})$$$
+	- worst-case: $$$O(b^m)$$$
+- Another improvement:
+	- Cut the search early and apply heuristic evaluation function
+- Heuristic on each node:
+	- must order terminal nodes similary to the utility function
+	- should be orders of magnitue faster than searching the subtree
+	- for non-terminal nodes it should strongly correlate with the chances of winning from that node
+
+### Local Beam Search
+
+- Maintain a population of states
+
+- To optimize based on a heuristic, you must sample along a localized region around a maximum/minimum
+	- **Nash Equilibrium**
+		- Prisoner's Dilemma
