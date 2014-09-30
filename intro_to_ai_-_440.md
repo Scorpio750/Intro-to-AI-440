@@ -194,11 +194,137 @@ h(n) &\leq c(n, a, n) + h(n') \\\
 	- must order terminal nodes similary to the utility function
 	- should be orders of magnitue faster than searching the subtree
 	- for non-terminal nodes it should strongly correlate with the chances of winning from that node
-
-### Local Beam Search
-
-- Maintain a population of states
-
 - To optimize based on a heuristic, you must sample along a localized region around a maximum/minimum
 	- **Nash Equilibrium**
 		- Prisoner's Dilemma
+
+---
+
+## 9/18/14
+
+### Local versus Global Search
+
+#### Local Search
+
+- Complete solution
+- Searches how to change from invalid to valid solution
+
+#### Global Search
+
+- Incrememtally advances while maintaining validity from an empty to a complete solution
+
+
+#### Hill Climbing problem
+
+- Example of Local search
+
+![Hill Climbing](http://trevoirwilliams.com/wp-content/uploads/2013/04/local-maximum0021-470x260.png)
+
+
+### Probabilistic Completeness
+
+- Complete algorithms will find a solution in finite time
+- **Probabilistic** algorithms will find a solution eventually given infinite time
+	- An algorithm is defined as **probabilistically complete** when the probability of finding a 
+	- Given a algorithm with probability $$$p$$$ time of succeeding, the expected number of restarts is $$$1\over p$$$
+	
+### Local Beam Search
+
+- Maintain a population of states
+	- Apply "survival of the fittest"
+	- We cannot blindly apply this rule, or we will eventually have multiple copies of the same state
+	
+### Genetic Algorithms
+
+- Maintain a population of candidate solution states
+- Apply a probabilistic selection step
+	- High quality states have high prob. of surviving
+- Then apply a crossover operation, which will combine  **string representations** of the states to guarantee new ones.
+- Then apply a **mutation operation** over the string representation of the states.
+- All these operations will be *randomly* chosen, unless we have some information about the state space
+- This algorithm does not offer any *insight* into the search problems
+
+### Constraint Safisfaction Problems
+
+- **Constraint Satisfaction Problems** are used to conform a large, abstract set into a a standard, structured, and very simple representation
+- Discrete and finite domains
+- CSP has a set of variables, $$$X_1, X_2, $$$ and a set of constraints $$$C_1,\dotsc,C_m$$$
+	- $$$X_i:\text{ has a domain }D_i$$$
+
+#### Approach A: Incremental Formulation
+
+- Initial assignment: empty
+- Successor: pick an unassigned variable and assign it a value that does not violate constraints with the assigned variables
+- Goal test: complete assignment
+	- Backtracking Search (DFS)
+
+---
+## 9/25/14
+
+### Searches with Logical Inference
+
+#### Inference by Resolution
+
+- Any complete search algorithm, applying only the resolution rule, can derive any conclusion entailed by a knowledge base
+- Everything that can be expressed using propositional logic can use resolution to infer new knowledge
+
+##### Steps
+
+1. Represent your knowledge base as a set of logical propositions $$$(KB)$$$
+2. Turn the statetment $$$(KB \land \neg\alpha)$$$ into **CNF** (conjunctive normal orm  form	
+### Ground Resolution Thm
+
+- If a set of clauses is unsatisfiable, then the resolution closure (the set of clauses you can generate) contains the empty clause
+	- *Clause* - Huge boolean statement
+	- Process will complete in finite time
+- Not everything can be succinctly represented in propositional logic form
+
+#### First-Order Logic
+
+- Operators $$$\forall, \exists$$$
+
+#### Second-order Logic
+
+- Eventually
+- Always
+- (Modal Logic)
+
+### Davis-Putnam Algorithm
+
+- Backtracking search is still applicable to Boolean satisfiability
+- Known as the **Davis-Putnam** algorithm
+- Features of the algorithm:
+	- **Early Termination**
+		- No need to reach the leaf nodes to realize satisfiability or not
+			- e.g. $$$(A\lor B)\land (A\lor C)$$$
+			- True if $$$A$$$ is true, no need to search for $$$B$$$ or $$$C$$$
+- A clause is true as long as one literal true
+- A CNF sentence is false as long as one clause is false
+
+#### Pure Symbol Heuristic
+
+- A symbol is *pure* if it appears with the same "sign" in every clause
+- Assign the value to the variable that satisfies the clauses
+
+---
+## 9/30/14
+
+## Classical Planning
+
+- Once you have expressed your planning problem using PDDL, you can then apply a search method
+	- Forward Search
+	- Consider all actions out of the state with pre-conditions attained by the state
+	- You can also perform backward search where we make sure that the actions considered will have effects agreeing with the state
+	
+#### Challenges:
+
+- Exploring irrelevant actions
+- Huge state space
+
+- We need heuristics for state abstraction, to group similar states to reduce the size of the search space
+- Edges correspond to the PDDL actions to increase the number of edges we can relax the presentation of actions and compute the number of actions that can turn the current state into the good one
+
+#### Branching factor of Backward Search
+
+- Given a goal state $$$g$$$ and an action $$$a$$$, we can get the relevant state $$$g'$$$ $$g' = (g- ADD(a)\cup PRECOND(a))$$
+- During backward search we need to deal with partially uninstantiated actions and states
