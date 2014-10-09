@@ -7,10 +7,18 @@
 
 ## Table of Contents
 
-1. [Problem-Solving Agents](#anchor1)
-	2. [Search Problems](#anchor1.1)
+1. [Problem-solving Agents](#anchor1)
+	1. [Search Problems](#anchor1.1)
 	2. [Optimizing Search Problems](#anchor1.2)
 	3. [Adversarial Search](#anchor1.3)
+	4. [Searches with Logical Inference](#anchor1.4)
+	5. [Classical Planning](#anchor1.5)
+	6. [Probabilistic Reasoning](#anchor1.6)
+2. [Decision Theory](#anchor2)
+	3. [Bayesian Networks](#anchor2.1)
+	2. [Exact Inference using Bayesian Networks](#anchor2.2)
+		1. [Inference by Enumeration](#anchor2.21)
+		2. [Variable Elimination](#anchor2.22)
 
 
 ---
@@ -261,17 +269,18 @@ h(n) &\leq c(n, a, n) + h(n') \\\
 ---
 ## 9/25/14
 
-### Searches with Logical Inference
+## [Searches with Logical Inference](id:anchor1.4)
 
-#### Inference by Resolution
+### Inference by Resolution
 
 - Any complete search algorithm, applying only the resolution rule, can derive any conclusion entailed by a knowledge base
 - Everything that can be expressed using propositional logic can use resolution to infer new knowledge
 
-##### Steps
+#### Steps
 
 1. Represent your knowledge base as a set of logical propositions $$$(KB)$$$
-2. Turn the statetment $$$(KB \land \neg\alpha)$$$ into **CNF** (conjunctive normal orm  form	
+2. Turn the statetment $$$(KB \land \neg\alpha)$$$ into **CNF** (conjunctive normal  form	
+
 ### Ground Resolution Thm
 
 - If a set of clauses is unsatisfiable, then the resolution closure (the set of clauses you can generate) contains the empty clause
@@ -309,7 +318,7 @@ h(n) &\leq c(n, a, n) + h(n') \\\
 ---
 ## 9/30/14
 
-## Classical Planning
+## [Classical Planning](id:anchor1.5)
 
 - Once you have expressed your planning problem using PDDL, you can then apply a search method
 	- Forward Search
@@ -328,3 +337,138 @@ h(n) &\leq c(n, a, n) + h(n') \\\
 
 - Given a goal state $$$g$$$ and an action $$$a$$$, we can get the relevant state $$$g'$$$ $$g' = (g- ADD(a)\cup PRECOND(a))$$
 - During backward search we need to deal with partially uninstantiated actions and states
+
+---
+## 10/2/14
+
+## [Probabilistic Reasoning](id:anchor1.6)
+
+- $$$A^*$$$ is optimally efficient; i.e. it expands the least amount of nodes
+- Search tree differs in cases with multiple agents (chess)
+	- If it is a zero-sum game, use mini-max algorithm
+- What kind of heuristics are assigned to constraint satisfaction problems? 
+	- Maximal constraint
+	- If a knowledge base is expressed as a logical expression and you want to find if it expresses a value $$$a$$$, you use resolution:
+	
+	\\[\begin{aligned}
+	&KB \models a? \\\
+	(&KB ^ \neg a) \\\
+	\Rightarrow &3-CNF \\\
+	\because &\bot,\; KB \models a \\\
+	\because \neg &\bot,\; KB \;\neg \models a
+	\end{aligned}\\]
+	
+---
+
+# [Decision Theory](id:anchor2)
+
+- **Probability theory** + **Utility Theory**
+- So far everything was either true or false
+- But now we do not have enough information about the state of all variables
+- In probability theory you assign a **belief** regarding the value of variables which can vary
+
+### Decision-Theoretic Agents
+
+- Update their belief about the state they are in based on actions/sensing
+Calculate outcome probabilities for actions given their descriptions and current belief
+- Select action that maximizes their expected utility
+
+### Conditional and Unconditional Probabilities
+
+$$P(A\mid B) = {P(AB) \over P(B)}$$
+
+#### Marginalization
+
+$$P(Y) = \sum_Z P(YZ)$$
+
+#### Conditioning rule
+
+$$P(Y) = \sum_Z P(Y\mid Z) P(Z)$$
+
+#### Normalization Factor
+
+\\[\begin{align}
+&P(A\mid B) + P(\neg A\mid B) = 1 \\\
+&P(A\mid B) = {P(AB)\over P(B)} = \alpha P(AB) \\\
+&P(\neg A\mid B) = {P\neg AB) \over P(B)} = \alpha P(\neg AB) \\\
+\implies &\alpha (P(AB) + P(\neg AB) = 1 \\\
+\implies &\alpha = {1\over P(AB) + P(\neg AB)} \\\
+\end{align}\\]
+
+---
+## 10/7/14
+
+## More Decision Theory
+
+- Recap: Maximize expected utility given uncertainty
+- If $$$X, Y$$$ are independent events:
+
+\\[\begin{aligned}
+&P(X\mid Y) = P(X) \\\
+&P(X, Y) = P(X) P(Y) \\\
+&P(cause\mid effects_1,\dotsc,effects\_{10}) \\\
+\end{aligned}\\]
+
+### Baye's Rule
+
+$$P(X\mid Y) = {P(Y\mid X)\; P(X)\over P(Y)}$$
+
+## [Representational Tool: Bayesian Networks](id:anchor2.1)
+
+- Graphical Model
+- Nodes are the random variables of a problem
+- An edge $$$X\to Y$$$ implies that $$$Y$$$ depends on $$$X$$$
+- Each $$$X_i$$$ has a conditional prob. distribution: $$P(X_i\mid Parents(X_i))$$
+
+### Burglary Example
+
+\\[\begin{pmatrix}
+P(B) & & P(E) \\\
+& P(A\mid BE) \\\
+P(J\mid A) & & P(M\mid A) \\\
+\end{pmatrix}\\]
+
+$$\Downarrow$$
+
+\\[\begin{pmatrix}
+0.001 & & 0.002 \\\
+& P(A\mid BE) \\\
+.9 & & .7 \\\
+\end{pmatrix}\\]
+
+- Using the **full joint probability table** with $$$2^5$$$ cells, we can use **marginalization** to reduce the amount of cells we have to look at
+
+\\[\begin{align}
+&P(X_3,X_5) = \sum\_{X\neq X_3, X_5}P(X_1,\dotsc,X_5) \\\
+&P(X_3\mid X_5) = \alpha P(X_3,X_5) \\\
+&P(\neg X_3\mid X_5 = \alpha P(\neq X_3, X_5) \\\
+&P(X_1,\dotsc, X_n) = P(X_1,\dotsc,X\_{n-1})\; P(X_1 \dotso X\_{n-1}) \\\
+=\; &P(X_n\mid X_1,\dotsc, X_n-1) \; P(X\_{n-1}\mid X_1,\dotsc X\_{n-2}\; P(X_1\dotso X\_{n-2}) \\\
+=\; &\prod\_{x_i} P(X_i \mid X_1 \dotso X\_{i-1} \\\
+= &\prod\_{X_i} P(X_i\mid Parents(X_i)) \\\
+\end{align}\\]
+
+## [Exact Inference using Bayesian Networks](id:anchor2.2)
+
+- $$$X:$$$ denotes a query variable
+- $$$e:$$$ observed over evidence variables $$$E$$$
+- $$$Y:$$$ hidden variables
+- Complete set of variables: $$$X \cup E \cup Y$$$
+- We want to compute $$$P(X\mid e)$$$
+
+### 1. [Inference by enumeration](id:anchor2.21)
+
+\\[\begin{align}
+P(B\mid j,m) &= \alpha\, P(B,j,m) \\\
+&= \alpha \sum_A \sum_E P(A, E, B, j=t, m=t) \\\
+&= \alpha \sum_A \sum_E P(B)\; P(E)\; P(A\mid B,E)\; P(J=t, m=t) \\\
+&\implies P(B\mid J=t, m=t) \\\
+&= \alpha \, P(B) \; \sum_E P(E) \sum_AP(A\mid B, E) \; P(j=t\mid A)\; P(M=t\mid A) \\\
+\end{align}\\]
+
+### 2. [Variable Elimination](id:anchor2.22)
+
+- Note inference by enumeration contains wasteful computation
+	- We reuse intermediate results
+
+---
