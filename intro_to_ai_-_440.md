@@ -19,6 +19,9 @@
 	2. [Exact Inference using Bayesian Networks](#anchor2.2)
 		1. [Inference by Enumeration](#anchor2.21)
 		2. [Variable Elimination](#anchor2.22)
+	3. [Approximate Inference](#anchor2.3)
+		1. [Dynamic Bayesian Networks](#anchor2.31)
+		2. [Filtering](#anchor2.32)
 
 
 ---
@@ -131,7 +134,7 @@ g(n') &= g(n) + c(n,a,n) \\\
 f(n') &= g(n') + h(n') \\\
 h(n) &\leq c(n, a, n) + h(n') \\\
 \implies h(n) &\geq h(n) - c(n, a, n') \\\
-\end{align}\\]l
+\end{align}\\]
 
 - The first goal node that we hit is going to be the optimal path
 	- The heuristic at the goal node will always be $$$0$$$, and because **A\*** visits everything in non-decreasing order
@@ -436,7 +439,7 @@ $$\Downarrow$$
 .9 & & .7 \\\
 \end{pmatrix}\\]
 
-- Using the **full joint probability table** with $$$2^5$$$ cells, we can use **marginalization** to reduce the amount of cells we have to look at
+- Using the **full joint probability table** (product of all conditional probabilities on the Bayesian Network) with $$$2^5$$$ cells, we can use **marginalization** to reduce the amount of cells we have to look at
 
 \\[\begin{align}
 &P(X_3,X_5) = \sum\_{X\neq X_3, X_5}P(X_1,\dotsc,X_5) \\\
@@ -472,3 +475,85 @@ P(B\mid j,m) &= \alpha\, P(B,j,m) \\\
 	- We reuse intermediate results
 
 ---
+
+## 10/14/14
+
+## Probabilistic Inference
+
+- **Naive Approach:** Go through the F.J.P.D.
+- **Bayesian Networks** can express the (conditional) independent properties of a probabilistic setup
+- Given a Bayesian Network, the FJPD equals the product of all conditional probabilities on the network
+	- Inference by enumeration
+	- Variable elimination extends this approach and aims to minimize repetitive computations by strong intermediant results
+		- General case: exponential time
+		- For *polytrees:* linear time (!!!)
+	
+\\[\begin{align}
+P(A, B, C, D, E) &= P(A) \; P(B\mid A) \; P(C\mid A) \,\, P(D\mid B, C) \; P(E\mid C) \\\
+\\\
+P(A\mid B, E) &= \alpha P(A, B, E) = a \sum_D \sum_C P(A, B, C, D, E) \\\
+P(A) &= aP(A) \; P(B\mid A) \sum_C P(C\mid A) \,\, P(E\mid C) \sum_D P(D\mid B, C) \\\
+\end{align}\\]
+
+## [Approximate Inference](id:anchor2.3)
+
+- For unconditional probabilities: use direct sampling
+- Direct sampling approximates the FJPD
+
+$$P(a, b, c, d, e) \cong {\mu(a, b, c, d, e) \over N}$$
+
+- As $$$N\to\infty$$$ the ratio on the right converges to the true probability
+- For conditional probabilities we can use 
+	- **Rejection sampling:** ignore all samples that do not agree with the evidence vars
+	- **Likelihood weighting:** Fix the evidence variables. Keep track of a weight for each sample, that expresses how likely this sample is.
+	
+### [Dynamic Bayesian Networks](id:anchor2.31)
+
+- Denotes observable evidence $$$E\_{t-1}, E_t, E\_{t+1}$$$ and and hidden state variables $$$X\_{t-1}, X_t, X\_{t+1}$$$
+- Each state is dependent on the previous one, i.e. $$X\_{t+1} = P(X\_{t+1} \mid X_t)$$
+
+#### Assumptions
+
+- Markov assumption
+- The current state depends only on a finite history of previous states
+- 1st order Markov finite history = last state
+
+#### Stationary Process
+
+- The process with which states change over time and evidence variables depend on state variables remains the same
+
+#### Three inputs for DBN
+
+- Prior probability: $$$P(X_0)$$$
+- Transition model: $$$P(X\_{t+1} \mid X_t)$$$
+- Observation model: $$$P(E\_{t+1}\mid X\_{t+1})$$$
+
+The **FJPD** is:
+
+\\[\begin{align}
+&P(X_0,\dotsc, X_t, E_1,\dotsc, E_t) \\\
+=\; & P(X_0) \prod\_{k=1}^t P(X_k\mid X\_{k+1})\; P(E_k\mid X_k) \\\
+\end{align}\\]
+
+- Problems we want to answer in an incremental way:
+	- Filtering problem $$$P(X_t\mid E\_{1:t})$$$
+	- Prediction Problem $$$P(X\_{t+k}\mid E\_{1:t}) \quad k\geq 1$$$
+	- Smoothing Problem $$$P(X_k \mid E\_{1:t}) \quad 1\leq k < t$$$
+	
+### [Filtering](id:anchor2.32)
+
+- The idea is to solve this incrementaly
+
+$$P(X\_{t+1}\mid E\_{1:t})$$
+
+- Assume that you have solved this problem in the previous time step
+
+$$P(X_t \mid E\_{1:t})$$
+
+\\[\begin{align}
+&P(X\_{t+1} \mid E\_{1:t+1}) = P(X\_{t+1}\mid E\_{1:t} E\_{t+1}) \\\
+\text{Apply Bayes's Rule} \\\
+ \hookrightarrow &= \alpha P(E\_{t+1} \mid X\_{t+1} E\_{1:t} \; P(X\_{t+1} \mid E\_{1:t}) \\\
+\text{Markov assumption} \\\
+ \hookrightarrow &= \alpha P(E\_{t+1} \mid X\_{t+1} \; P(X\_{t+1} \mid E\_{1:t}) \\\
+\end{align}\\]
