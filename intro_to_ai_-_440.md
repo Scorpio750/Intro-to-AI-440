@@ -12,6 +12,7 @@
 	2. [Optimizing Search Problems](#anchor1.2)
 	3. [Adversarial Search](#anchor1.3)
 	4. [Searches with Logical Inference](#anchor1.4)
+		4.1 [Satisfiability](#anchor1.41)
 	5. [Classical Planning](#anchor1.5)
 	6. [Probabilistic Reasoning](#anchor1.6)
 2. [Decision Theory](#anchor2)
@@ -273,6 +274,19 @@ h(n) &\leq c(n, a, n) + h(n') \\\
 ## 9/25/14
 
 ## [Searches with Logical Inference](id:anchor1.4)
+
+### [Satisfiability](id:anchor1.41)
+
+- If a sentence $$$\alpha$$$ is true in **model** or **possible world** $$$m$$$, we say that *m* **satisfies** $$$\alpha$$$, or *m* is a **model of** $$$\alpha$$$
+- $$$M(\alpha)$$$ is the set of all possible worlds/models of $$$\alpha$$$
+
+#### Entailment
+\\[\begin{align}
+\alpha \models \beta &\iff M(\alpha) \subseteq M(\beta) \\\
+\alpha \equiv \beta &\iff \alpha \models \beta \wedge \beta \models \alpha \\\
+\alpha \models \beta &\iff (\alpha \Rightarrow \beta) \\\
+\end{align}\\]
+
 
 ### Inference by Resolution
 
@@ -557,3 +571,42 @@ $$P(X_t \mid E\_{1:t})$$
 \text{Markov assumption} \\\
  \hookrightarrow &= \alpha P(E\_{t+1} \mid X\_{t+1} \; P(X\_{t+1} \mid E\_{1:t}) \\\
 \end{align}\\]
+
+---
+## 10/16/14
+
+## More Probabilstic Inference
+
+- Transition Model
+- Observation Model
+- Input: $$$P(X_0), TM, OM$$$
+- Problems: 
+	- Filtering: $$$P(X_t\mid E\_{1:t})$$$
+	- Prediction: $$$P(X\_{t+k} \mid E\_{1:t})\quad k\geq 1$$$
+	- Smoothing: $$$P(X_k\mid E\_{1:t})\quad 1\leq k < t$$$
+	- Most Likely Explanation: $$$\mathrm{argmax}\_{x\_{1:t}}P(X\_{1:t} \mid E\_{1:t})$$$
+
+### Forward + Backward Recursion
+
+- Constant Operator $$$\to$$$ each stop
+- For $$$t$$$ states, $$$O(t)$$$ cost
+- The same for backward
+- We have to store intermediary results.
+- Similar to filtering:
+
+\\[\begin{align}
+&\mathrm{argmax}\\{P(X\_{i:t+1} \mid E\_{i:t+1})\\} \\\
+= &\alpha \, P(E\_{t+1}\mid X\_{t+1}) \; \mathrm{argmax}\\{P(X\_{t+1}\mid X_t)\\} \; \mathrm{argmax}\\{P(X\_{1:t})\mid E\_{1:t})\\} \\\
+\end{align}\\]
+
+### Continuous State Estimation
+
+- Impossible to specify conditional probabilities $$$\forall$$$ values
+	1. Discretization is lossy
+	2. Use **probability desnity function**
+		
+		$$$\hookrightarrow$$$ Should require finite # of params
+
+**Ex:** Gaussian Distribution
+
+$$\mathcal{N}(\mu,\sigma^2), \;\mu = \text{mean}, \sigma = \text{std. dev.}$$
