@@ -16,6 +16,7 @@
 	5. [Classical Planning](#anchor1.5)
 	6. [Probabilistic Reasoning](#anchor1.6)
 2. [Decision Theory](#anchor2)
+	0. [Rules of Probability](#anchor2.01) 
 	1. [Bayesian Networks](#anchor2.1)
 	2. [Exact Inference using Bayesian Networks](#anchor2.2)
 		1. [Inference by Enumeration](#anchor2.21)
@@ -397,7 +398,19 @@ h(n) &\leq c(n, a, n) + h(n') \\\
 Calculate outcome probabilities for actions given their descriptions and current belief
 - Select action that maximizes their expected utility
 
-### Conditional and Unconditional Probabilities
+### [Rules of Probability](id:anchor2.01)
+
+Probabilities are **stochastic**:
+
+$$P(a) + P(\neg a) = 1$$
+
+For state space $$$S = \\{s_1, s_2,\dotsc,s_n\\}$$$:
+
+$$P(S) = \sum_i P(s_i) = 1$$
+
+
+#### Conditional and Unconditional Probabilities
+
 
 $$P(A\mid B) = {P(AB) \over P(B)}$$
 
@@ -417,7 +430,7 @@ $$P(Y) = \sum_Z P(Y\mid Z) P(Z)$$
 &P(\neg A\mid B) = {P\neg AB) \over P(B)} = \alpha P(\neg AB) \\\
 \implies &\alpha (P(AB) + P(\neg AB) = 1 \\\
 \implies &\alpha = {1\over P(AB) + P(\neg AB)} \\\
-\end{align}\\]
+\end{align}\\
 
 ---
 ## 10/7/14
@@ -435,7 +448,7 @@ $$P(Y) = \sum_Z P(Y\mid Z) P(Z)$$
 
 ### Baye's Rule
 
-$$P(X\mid Y) = {P(Y\mid X)\; P(X)\over P(Y)}$$
+$$P(H\mid D) = {P(D\mid H)\; P(H)\over P(D)}$$
 
 ## [Representational Tool: Bayesian Networks](id:anchor2.1)
 
@@ -709,7 +722,7 @@ Decision networks are valuated according to the following algorithm:
 A fixed action sequence may always not be a desirable solution
 
 - Instead, a solution should specify what the agent should do at each state
-	- These solutions are called **policies:** $$\Pi(s): \text{ action recommended by policy at state }S$$
+	- These solutions are called **policies:** $$\Pi(s): \text{ action recommended by policy at state }s$$
 	- **Ex:** treat a state space as a *vector field*
 - Each time we execute a policy, a different state sequence arises
 - We must look at the *expected utility* of our policies
